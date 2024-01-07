@@ -38,6 +38,10 @@ public class Individu_VDC implements Individu {
             dist += sqrt(dist_x * dist_x + dist_y * dist_y);
         }
 
+        double dist_x = abs(coord_x[chemin[chemin.length - 1]] - coord_x[chemin[0]]);
+        double dist_y = abs(coord_y[chemin[chemin.length - 1]] - coord_y[chemin[0]]);
+        dist += sqrt(dist_x * dist_x + dist_y * dist_y);
+
         return 100.0 / dist;
     }
 
@@ -45,7 +49,8 @@ public class Individu_VDC implements Individu {
     public Individu[] croisement(Individu conjoint) {
 
         Individu_VDC[] enfants = new Individu_VDC[2];
-        enfants[0] = new Individu_VDC(coord_x, coord_y);;
+        enfants[0] = new Individu_VDC(coord_x, coord_y);
+        ;
         enfants[1] = new Individu_VDC(coord_x, coord_y);
         Individu_VDC conjoint_vdc = (Individu_VDC) conjoint;
 
@@ -95,22 +100,20 @@ public class Individu_VDC implements Individu {
         int[] non_renc2 = new int[count_2];
 
         int current = 0;
-        for (int i = 0; i < b1.length; i++) {
-            if (!b1[i])
-                non_renc1[current++] = i;
+        for (int i = 0; i < conjoint_vdc.chemin.length; i++) {
+            if (!b1[conjoint_vdc.chemin[i]])
+                non_renc1[current++] = conjoint_vdc.chemin[i];
         }
         current = 0;
-        for (int i = 0; i < b2.length; i++) {
-            if (!b2[i])
-                non_renc2[current++] = i;
+        for (int i = 0; i < this.chemin.length; i++) {
+            if (!b2[this.chemin[i]])
+                non_renc2[current++] = this.chemin[i];
         }
 
-        for (int i = 0; i < non_renc1.length; i++)
-        {
+        for (int i = 0; i < non_renc1.length; i++) {
             enfants[0].chemin[ind + current_1 + i] = non_renc1[i];
         }
-        for (int i = 0; i < non_renc2.length; i++)
-        {
+        for (int i = 0; i < non_renc2.length; i++) {
             enfants[1].chemin[ind + current_2 + i] = non_renc2[i];
         }
 
@@ -147,8 +150,7 @@ public class Individu_VDC implements Individu {
     // Pour empecher d'avoir des erreurs lorsque l'on insere
     // plusieurs fois un meme individu dans la liste
     @Override
-    public Individu_VDC clone()
-    {
+    public Individu_VDC clone() {
         Individu_VDC individuVdc = new Individu_VDC(this.coord_x, this.coord_y);
         individuVdc.chemin = this.chemin.clone();
 

@@ -35,11 +35,11 @@ public class Client_Voyageur_De_Commerce {
     public static void main(String[] args) throws InterruptedException {
 
         // PARAMS
-        int nbr_villes = 200;
+        int nbr_villes = 64;
         int nbr_indiv = 1000;
         int iterations_max = 1000;
         double prob_mut = 0.01;
-        boolean use_specific_file = true;
+        boolean use_specific_file = false;
         String specific_file = "quadraturecercle_200.txt";
 
 
