@@ -39,8 +39,8 @@ public class Client_Sac_A_Dos {
 
         /* paramètres */
         int nbr_indiv = 100;
-        double prob_mut = 0.01;
-        int iterations_max = 100;
+        double prob_mut = 0.1;
+        int iterations_max = 1000;
 
         /* On initialise les poids en lisant un fichier
          */
@@ -57,11 +57,6 @@ public class Client_Sac_A_Dos {
          * de nbr_indiv individus associés au problème
          * du sac à dos considéré
          */
-        Individu_SAD[] individus = new Individu_SAD[nbr_indiv];
-        for (int i = 0; i < nbr_indiv; i++) {
-            individus[i] = new Individu_SAD(poids, capacite);
-        }
-        Population<Individu_SAD> p = new Population<Individu_SAD>(individus);
 
 
         /* on génére les générations successives
@@ -70,38 +65,54 @@ public class Client_Sac_A_Dos {
          * on s'arrête si on a atteint la capacité ou si on fait un nombre donné (paramètre) d'itérations
          * le résultat est alors donné par l'individu maximal de la dernière génération
          */
-        double previous_adaptation = 0;
-        for (int i = 0; i < iterations_max; i++) {
-            p.reproduction(prob_mut);
-            System.out.println("-- Gen " + i);
-            System.out.println("\tAdaptation moyenne: " + p.adaptation_moyenne());
-            System.out.println("\tAdaptation maximale: " + p.adaptation_maximale());
-            System.out.println("\tAdaptation individu max: " + p.individu_maximal().adaptation());
-            if (p.individu_maximal().adaptation() < previous_adaptation)
-            {
-                System.out.println("Erreur: l'adaptation max a baissee!!!");
-                break;
+        int iter_total = 0;
+        int correct_result_count = 0;
+        double test_max_count = 1000.0;
+        for (int j = 0; j < test_max_count; j++) {
+            double previous_adaptation = 0;
+
+            Individu_SAD[] individus = new Individu_SAD[nbr_indiv];
+            for (int i = 0; i < nbr_indiv; i++) {
+                individus[i] = new Individu_SAD(poids, capacite);
+            }
+            Population<Individu_SAD> p = new Population<Individu_SAD>(individus);
+
+            for (int i = 0; i < iterations_max; i++) {
+                p.reproduction(prob_mut);
+//                System.out.println("-- Gen " + i);
+//            System.out.println("\tAdaptation moyenne: " + p.adaptation_moyenne());
+//            System.out.println("\tAdaptation maximale: " + p.adaptation_maximale());
+//            System.out.println("\tAdaptation individu max: " + p.individu_maximal().adaptation());
+                if (p.individu_maximal().adaptation() < previous_adaptation) {
+                    System.out.println("Erreur: l'adaptation max a baissee!!!");
+                    break;
+                }
+
+                previous_adaptation = p.individu_maximal().adaptation();
+
+                Individu le_best = p.individu_maximal();
+                if (le_best.adaptation() == capacite) {
+//                    System.out.println("Résultat trouvé");
+                    iter_total += i;
+                    correct_result_count++;
+                    break;
+                }
             }
 
-            previous_adaptation = p.individu_maximal().adaptation();
+//            Individu_SAD le_best = (Individu_SAD) p.individu_maximal();
 
-            Individu le_best = p.individu_maximal();
-            if (le_best.adaptation() == capacite) {
-                System.out.println("Chad trouvé");
-                break;
-            }
+//            System.out.print("Objets: [");
+//            boolean[] t = le_best.getResult();
+//            for (int i = 0; i < nbr_objets; i++) {
+//                if (t[i]) {
+//                    System.out.print(poids[i] + " ");
+//                }
+//            }
+//            System.out.println("]");
         }
 
-        Individu_SAD le_best = (Individu_SAD) p.individu_maximal();
-
-        System.out.print("Objets: [");
-        boolean[] t = le_best.getResult();
-        for (int i = 0; i < nbr_objets; i++) {
-            if (t[i]) {
-                System.out.print(poids[i] + " ");
-            }
-        }
-        System.out.println("]");
+        System.out.println("Nombre d'iteration moyen: " + ((double) iter_total)/test_max_count);
+        System.out.println("Nombre de résultats corrects: " + correct_result_count);
     }
 }
 
